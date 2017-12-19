@@ -2021,6 +2021,143 @@ declare class WebSocketNetDriver extends NetDriver {
 	static C(Other: UObject | any): WebSocketNetDriver;
 }
 
+declare class MidiAsset extends UObject { 
+	Data: number[];
+	static Load(ResourceName: string): MidiAsset;
+	static Find(Outer: UObject, ResourceName: string): MidiAsset;
+	static GetDefaultObject(): MidiAsset;
+	static CreateDefaultSubobject(Name: string, Transient?: boolean, Required?: boolean, Abstract?: boolean): MidiAsset;
+	static C(Other: UObject | any): MidiAsset;
+}
+
+declare type ENoteEnum = 'NE_C' | 'NE_CS' | 'NE_D' | 'NE_DS' | 'NE_E' | 'NE_F' | 'NE_FS' | 'NE_G' | 'NE_GS' | 'NE_A' | 'NE_AS' | 'NE_B';
+declare var ENoteEnum : { NE_C:'NE_C',NE_CS:'NE_CS',NE_D:'NE_D',NE_DS:'NE_DS',NE_E:'NE_E',NE_F:'NE_F',NE_FS:'NE_FS',NE_G:'NE_G',NE_GS:'NE_GS',NE_A:'NE_A',NE_AS:'NE_AS',NE_B:'NE_B', };
+declare class MidiUtils extends BlueprintFunctionLibrary { 
+	static Load(ResourceName: string): MidiUtils;
+	static Find(Outer: UObject, ResourceName: string): MidiUtils;
+	static GetDefaultObject(): MidiUtils;
+	static CreateDefaultSubobject(Name: string, Transient?: boolean, Required?: boolean, Abstract?: boolean): MidiUtils;
+	static NoteToFrequency(note: number): number;
+	static NoteToChord(note: number): ENoteEnum;
+	static FrequencyToNote(Frequency: number): number;
+	static DefaultNoteToFrequency(note: ENoteEnum): number;
+	static C(Other: UObject | any): MidiUtils;
+}
+
+declare type EMidiTypeEnum = 'MTE_NOTE_OFF' | 'MTE_NOTE' | 'MTE_NOTE_AFTERTOUCH' | 'MTE_CONTROLLER' | 'MTE_PROGRAM_CHANGE' | 'MTE_CHANNEL_AFTERTOUCH' | 'MTE_PITCH_BEND' | 'MTE_MAX' | '';
+declare var EMidiTypeEnum : { MTE_NOTE_OFF:'MTE_NOTE_OFF',MTE_NOTE:'MTE_NOTE',MTE_NOTE_AFTERTOUCH:'MTE_NOTE_AFTERTOUCH',MTE_CONTROLLER:'MTE_CONTROLLER',MTE_PROGRAM_CHANGE:'MTE_PROGRAM_CHANGE',MTE_CHANNEL_AFTERTOUCH:'MTE_CHANNEL_AFTERTOUCH',MTE_PITCH_BEND:'MTE_PITCH_BEND',MTE_MAX:'MTE_MAX',:'', };
+declare class MidiEvent { 
+	Type: Type;
+	Channel: number;
+	Data1: number;
+	Data2: number;
+	clone() : MidiEvent;
+	static C(Other: UObject | any): MidiEvent;
+	SendMidiEvent(): void;
+	static SendMidiEvent(Event: MidiEvent): void;
+}
+
+declare class MidiComponent extends ActorComponent { 
+	PlaySpeed: number;
+	SimplifyNote: boolean;
+	OnStart: UnrealEngineMulticastDelegate<(beginning: boolean) => void>;
+	OnStop: UnrealEngineMulticastDelegate<(finished: boolean) => void>;
+	OnMidiEvent: UnrealEngineMulticastDelegate<(Event: MidiEvent) => void>;
+	static Load(ResourceName: string): MidiComponent;
+	static Find(Outer: UObject, ResourceName: string): MidiComponent;
+	static GetDefaultObject(): MidiComponent;
+	static CreateDefaultSubobject(Name: string, Transient?: boolean, Required?: boolean, Abstract?: boolean): MidiComponent;
+	stop(): void;
+	start(): void;
+	reset(): void;
+	LoadMML(path: string): void;
+	LoadFile(path: string): void;
+	LoadAsset(MidiAsset: MidiAsset): void;
+	isStarted(): boolean;
+	isRunning(): boolean;
+	GetResolution(): number;
+	GetDuration(): number;
+	static C(Other: UObject | any): MidiComponent;
+}
+
+declare class MidiAssetFactory extends Factory { 
+	static Load(ResourceName: string): MidiAssetFactory;
+	static Find(Outer: UObject, ResourceName: string): MidiAssetFactory;
+	static GetDefaultObject(): MidiAssetFactory;
+	static CreateDefaultSubobject(Name: string, Transient?: boolean, Required?: boolean, Abstract?: boolean): MidiAssetFactory;
+	static C(Other: UObject | any): MidiAssetFactory;
+}
+
+declare class MidiAssetFactoryNew extends Factory { 
+	static Load(ResourceName: string): MidiAssetFactoryNew;
+	static Find(Outer: UObject, ResourceName: string): MidiAssetFactoryNew;
+	static GetDefaultObject(): MidiAssetFactoryNew;
+	static CreateDefaultSubobject(Name: string, Transient?: boolean, Required?: boolean, Abstract?: boolean): MidiAssetFactoryNew;
+	static C(Other: UObject | any): MidiAssetFactoryNew;
+}
+
+declare class MidiDevice { 
+	Name: string;
+	Port: number;
+	clone() : MidiDevice;
+	static C(Other: UObject | any): MidiDevice;
+}
+
+declare class MidiInterface extends BlueprintFunctionLibrary { 
+	static Load(ResourceName: string): MidiInterface;
+	static Find(Outer: UObject, ResourceName: string): MidiInterface;
+	static GetDefaultObject(): MidiInterface;
+	static CreateDefaultSubobject(Name: string, Transient?: boolean, Required?: boolean, Abstract?: boolean): MidiInterface;
+	static SendMidiEvent(Event: MidiEvent): void;
+	static OpenMidiOutput(port: number): boolean;
+	static isOutputOpen(): boolean;
+	static GetMidiDevices(Input?: MidiDevice[],Output?: MidiDevice[]): {Input: MidiDevice[], Output: MidiDevice[]};
+	static CloseMidiOutput(): void;
+	static C(Other: UObject | any): MidiInterface;
+}
+
+declare class MidiInterfaceComponent extends ActorComponent { 
+	OnReceiveEvent: UnrealEngineMulticastDelegate<(Event: MidiEvent, deltaTime: number) => void>;
+	static Load(ResourceName: string): MidiInterfaceComponent;
+	static Find(Outer: UObject, ResourceName: string): MidiInterfaceComponent;
+	static GetDefaultObject(): MidiInterfaceComponent;
+	static CreateDefaultSubobject(Name: string, Transient?: boolean, Required?: boolean, Abstract?: boolean): MidiInterfaceComponent;
+	Send(Event: MidiEvent): void;
+	OpenOutput(port: number): boolean;
+	OpenInput(port: number): boolean;
+	CloseOutput(): void;
+	CloseInput(): void;
+	static C(Other: UObject | any): MidiInterfaceComponent;
+}
+
+declare class SoundWaveProceduralTest extends SoundWave { 
+	static Load(ResourceName: string): SoundWaveProceduralTest;
+	static Find(Outer: UObject, ResourceName: string): SoundWaveProceduralTest;
+	static GetDefaultObject(): SoundWaveProceduralTest;
+	static CreateDefaultSubobject(Name: string, Transient?: boolean, Required?: boolean, Abstract?: boolean): SoundWaveProceduralTest;
+	static C(Other: UObject | any): SoundWaveProceduralTest;
+}
+
+declare class SoundNodeProceduralTest extends SoundNode { 
+	Volume: number;
+	Frequency: number;
+	static Load(ResourceName: string): SoundNodeProceduralTest;
+	static Find(Outer: UObject, ResourceName: string): SoundNodeProceduralTest;
+	static GetDefaultObject(): SoundNodeProceduralTest;
+	static CreateDefaultSubobject(Name: string, Transient?: boolean, Required?: boolean, Abstract?: boolean): SoundNodeProceduralTest;
+	static C(Other: UObject | any): SoundNodeProceduralTest;
+}
+
+declare class SoundUtils extends BlueprintFunctionLibrary { 
+	static Load(ResourceName: string): SoundUtils;
+	static Find(Outer: UObject, ResourceName: string): SoundUtils;
+	static GetDefaultObject(): SoundUtils;
+	static CreateDefaultSubobject(Name: string, Transient?: boolean, Required?: boolean, Abstract?: boolean): SoundUtils;
+	static ConstantNote(amplitude: number,frequency: number): SoundWave;
+	static AudioNote(amplitude: number,frequency: number,seconds: number): SoundWave;
+	static C(Other: UObject | any): SoundUtils;
+}
+
 declare class JavascriptSlateEdNode { 
 	clone() : JavascriptSlateEdNode;
 	static C(Other: UObject | any): JavascriptSlateEdNode;
